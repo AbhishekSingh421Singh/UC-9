@@ -1,4 +1,4 @@
-name: Creating Infra using terraform
+name: Creating Infra using terraform (CI/CD Pipeline)
 on:
   push:
 
