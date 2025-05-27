@@ -1,4 +1,4 @@
-name: Creating a CI/CD pipeline
+name: Creating infra using CI/CD pipeline
 on:
   push:
 
