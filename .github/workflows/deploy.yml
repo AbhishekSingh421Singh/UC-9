@@ -45,7 +45,7 @@ jobs:
 
       - name: Terraform test
         run: |
-         terraform test
+          terraform test
         continue-on-error: true
         
          
