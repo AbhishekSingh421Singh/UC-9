@@ -1,4 +1,3 @@
-
 provider "aws" {
   region = var.region
 }
@@ -168,4 +167,61 @@ resource "aws_eks_node_group" "node_group" {
   instance_types = ["t3.medium"]
 
   depends_on = [aws_eks_cluster.eks]
+}
+
+# IAM Role for EKS Admin Access
+data "aws_caller_identity" "current" {}
+
+resource "aws_iam_role" "eks_admin_role" {
+  name = "eksAdminRole"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Effect = "Allow",
+        Principal = {
+          AWS = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"
+        },
+        Action = "sts:AssumeRole"
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy" "eks_admin_policy" {
+  name = "eksAdminPolicy"
+  role = aws_iam_role.eks_admin_role.id
+
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Effect = "Allow",
+        Action = [
+          "eks:DescribeCluster",
+          "eks:ListClusters",
+          "eks:ListNodegroups",
+          "eks:DescribeNodegroup"
+        ],
+        Resource = "*"
+      },
+      {
+        Effect = "Allow",
+        Action = [
+          "ssm:GetParameter",
+          "ssm:GetParameters",
+          "ssm:GetParametersByPath"
+        ],
+        Resource = "*"
+      },
+      {
+        Effect = "Allow",
+        Action = [
+          "sts:AssumeRole"
+        ],
+        Resource = "*"
+      }
+    ]
+  })
 }
