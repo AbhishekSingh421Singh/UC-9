@@ -1,4 +1,4 @@
-name: Destroying Infra using terraform (CI/CD Pipeline)
+name: Creating a CI/CD pipeline
 on:
   push:
 
